@@ -17,7 +17,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailsBase"></activity>
+        <activity
+            android:name=".DetailsBase"
+            android:parentActivityName=".Base">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.dmitro.database.Base" />
+        </activity>
     </application>
 
 </manifest>

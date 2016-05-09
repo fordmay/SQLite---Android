@@ -16,7 +16,9 @@ import com.example.dmitro.database.DetailsBase;
 import com.example.dmitro.database.R;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
@@ -38,14 +40,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(MyAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         Information info = mData.get(position);
-        holder.name_for_list.setText(Html.fromHtml(info.getName()));
+        holder.name_for_list.setText(info.getName());
+        //text with html format
         holder.about_for_list.setText(Html.fromHtml(info.getAbout()));
         //take img from internet
         Uri uri = Uri.parse(info.getImage());
         Context context = holder.image_for_list.getContext();
-        Picasso.with(context).load(uri).resize(60, 80).into(holder.image_for_list);
+        Picasso.with(context).load(uri)
+                .resizeDimen(R.dimen.image_size_width, R.dimen.image_size_height)
+                .centerInside()
+                .into(holder.image_for_list);
     }
 
     @Override
@@ -69,13 +75,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             Information infoId = mData.get(getAdapterPosition());
-
             int id = infoId.getId();
-            Intent intent = new Intent(mContext,DetailsBase.class);
+            String name = infoId.getName();
+            String img = infoId.getImage();
+            Intent intent = new Intent(mContext, DetailsBase.class);
             intent.putExtra("id", id);
+            intent.putExtra("name", name);
+            intent.putExtra("img", img);
             mContext.startActivity(intent);
-
-
         }
     }
 }

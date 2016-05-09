@@ -5,17 +5,23 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.example.dmitro.database.adapter.InfoDetails;
+import com.example.dmitro.database.adapter.MyAdapterDetails;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DetailsBase extends AppCompatActivity {
-    private List<InfoDetails> infoDetailsList;
+    private List<InfoDetails> dataDetails;
     private DataBaseHelper mDataBaseHelper;
-    private int id;
+    //adapter
+    private RecyclerView.LayoutManager mLayoutManagerDetails;
+    private RecyclerView mRecyclerViewDetails;
+    private MyAdapterDetails mAdapterDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,13 +31,35 @@ public class DetailsBase extends AppCompatActivity {
         mDataBaseHelper = new DataBaseHelper(getApplicationContext());
 
         Intent intent = getIntent();
-        id = intent.getIntExtra("id", 0);
+        //Title ActionBar
+        String name = intent.getStringExtra("name");
+        setTitle(name);
 
         getData();
+
+        //adapter
+        mRecyclerViewDetails = (RecyclerView) findViewById(R.id.list_detail);
+        mRecyclerViewDetails.setHasFixedSize(true);
+        // use a linear layout manager
+        mLayoutManagerDetails = new LinearLayoutManager(this);
+        mRecyclerViewDetails.setLayoutManager(mLayoutManagerDetails);
+
+        mAdapterDetails = new MyAdapterDetails(this, dataDetails);
+        mRecyclerViewDetails.setAdapter(mAdapterDetails);
     }
 
     public void getData() {
-        infoDetailsList = new ArrayList<>();
+        dataDetails = new ArrayList<>();
+
+        Intent intent = getIntent();
+        //get img path and add to Array
+        String img = intent.getStringExtra("img");
+        InfoDetails info0 = new InfoDetails();
+        info0.setImg(img);
+        dataDetails.add(info0);
+        //get id for filter
+        int id = intent.getIntExtra("id", 0);
+
         try {
             mDataBaseHelper.open();
             String quary = "SELECT " + DataBaseHelper.COLUMN_PROPERTIES + ", "
@@ -39,17 +67,20 @@ public class DetailsBase extends AppCompatActivity {
                     + " FROM " + DataBaseHelper.TABLE_DETAILS
                     + " WHERE " + DataBaseHelper.COLUMN_PREPID + "=" + id;
             Cursor cursor = mDataBaseHelper.database.rawQuery(quary, null);
-            cursor.moveToFirst();
             while (cursor.moveToNext()) {
                 String properties = cursor.getString(cursor.getColumnIndex(DataBaseHelper.COLUMN_PROPERTIES));
                 String describe = cursor.getString(cursor.getColumnIndex(DataBaseHelper.COLUMN_DESCRIBE));
                 Log.i("LOG_TAG", "PROPERTIES " + properties + " DESCRIBE " + describe);
+
+                InfoDetails info = new InfoDetails();
+                info.setProperties(properties);
+                info.setDescribe(describe);
+
+                dataDetails.add(info);
             }
             cursor.close();
             mDataBaseHelper.database.close();
         } catch (SQLException ex) {
         }
-
-
     }
 }

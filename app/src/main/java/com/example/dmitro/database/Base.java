@@ -44,6 +44,7 @@ public class Base extends AppCompatActivity {
         mAdapter = new MyAdapter(this, data);
         mRecyclerView.setAdapter(mAdapter);
 
+//        mAdapter.sortName();
 
     }
 
@@ -56,9 +57,9 @@ public class Base extends AppCompatActivity {
                     + DataBaseHelper.COLUMN_NAME + ", "
                     + DataBaseHelper.COLUMN_ABOUT + ", "
                     + DataBaseHelper.COLUMN_IMAGE
-                    + " FROM " + DataBaseHelper.TABLE;
+                    + " FROM " + DataBaseHelper.TABLE
+                    + " ORDER BY " + DataBaseHelper.COLUMN_NAME;
             Cursor cursor = mDataBaseHelper.database.rawQuery(query, null);
-            cursor.moveToFirst();
             while (cursor.moveToNext()) {
                 int id = cursor.getInt(cursor.getColumnIndex(DataBaseHelper.COLUMN_ID));
                 String name = cursor.getString(cursor.getColumnIndex(DataBaseHelper.COLUMN_NAME));
@@ -70,7 +71,8 @@ public class Base extends AppCompatActivity {
                 info.setId(id);
                 info.setName(name);
                 info.setAbout(about);
-                info.setImage(pathForImage+image);
+                info.setImage(pathForImage + image);
+
                 data.add(info);
             }
             cursor.close();
