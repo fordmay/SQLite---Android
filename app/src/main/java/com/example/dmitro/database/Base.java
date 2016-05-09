@@ -41,7 +41,7 @@ public class Base extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new MyAdapter(data);
+        mAdapter = new MyAdapter(this, data);
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -78,5 +78,4 @@ public class Base extends AppCompatActivity {
         } catch (SQLException ex) {
         }
     }
-
 }

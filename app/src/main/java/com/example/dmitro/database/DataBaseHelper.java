@@ -22,6 +22,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ABOUT = "about";
     public static final String COLUMN_IMAGE = "preppict";
 
+    public static final String TABLE_DETAILS = "all_inf_preps";
+    public static final String COLUMN_PREPID = "prepid";
+    public static final String COLUMN_PROPERTIES = "name";
+    public static final String COLUMN_DESCRIBE = "text_of";
+
     public SQLiteDatabase database;
     private Context myContext;
 

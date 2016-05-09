@@ -1,8 +1,6 @@
 package com.example.dmitro.database.adapter;
 
 public class Information {
-
-
     private int id;
     private String name;
     private String about;
