@@ -1,12 +1,16 @@
 package com.example.dmitro.database;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Menu;
 
 import com.example.dmitro.database.adapter.Information;
 import com.example.dmitro.database.adapter.MyAdapter;
@@ -44,8 +48,29 @@ public class Base extends AppCompatActivity {
         mAdapter = new MyAdapter(this, data);
         mRecyclerView.setAdapter(mAdapter);
 
-//        mAdapter.sortName();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_activity_base, menu);
+        //add the search in ActionBar
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                mAdapter.filter(query);
+                return true;
+            }
+        });
+        return true;
     }
 
     public void getData() {

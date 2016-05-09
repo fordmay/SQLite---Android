@@ -20,14 +20,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private Context mContext;
     private List<Information> mData = Collections.emptyList();
-
+    private List<Information> copyData = Collections.emptyList();
     public MyAdapter(Context context, List<Information> data) {
         mContext = context;
         mData = data;
+        copyData = mData;
     }
 
     @Override
@@ -84,5 +86,23 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             intent.putExtra("img", img);
             mContext.startActivity(intent);
         }
+    }
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        mData = new ArrayList<>();
+
+        if (charText.length() == 0) {
+            mData.addAll(copyData);
+        } else {
+            for (int i = 0; i < copyData.size(); i++) {
+                final Information copyCurrent = copyData.get(i);
+
+                if (copyCurrent.getAbout().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    mData.add(copyData.get(i));
+                }
+            }
+        }
+        //update adapter
+        notifyDataSetChanged();
     }
 }
