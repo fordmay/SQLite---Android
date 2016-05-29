@@ -1,6 +1,5 @@
 package com.example.dmitro.database.adapter;
 
-
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -58,14 +57,14 @@ public class MyAdapterDetails extends RecyclerView.Adapter<MyAdapterDetails.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         InfoDetails infoDetails = mDataDetail.get(position);
-        if(position == 0){
+        if (position == 0) {
             Uri uri = Uri.parse(infoDetails.getImg());
             Context context = holder.image_details.getContext();
             Picasso.with(context).load(uri)
                     .resizeDimen(R.dimen.image_details_size_width, R.dimen.image_details_size_height)
                     .centerInside()
                     .into(holder.image_details);
-        }else{
+        } else {
             holder.properties.setText(infoDetails.getProperties());
             holder.describe.setText(Html.fromHtml(infoDetails.getDescribe()));
         }
@@ -80,11 +79,12 @@ public class MyAdapterDetails extends RecyclerView.Adapter<MyAdapterDetails.View
         ImageView image_details;
         TextView properties;
         TextView describe;
+
         public ViewHolder(View itemView) {
             super(itemView);
-            image_details = (ImageView)itemView.findViewById(R.id.image_details);
-            properties = (TextView)itemView.findViewById(R.id.properties);
-            describe = (TextView)itemView.findViewById(R.id.describe);
+            image_details = (ImageView) itemView.findViewById(R.id.image_details);
+            properties = (TextView) itemView.findViewById(R.id.properties);
+            describe = (TextView) itemView.findViewById(R.id.describe);
         }
     }
 }

@@ -103,6 +103,7 @@ public class Base extends AppCompatActivity {
             cursor.close();
             mDataBaseHelper.database.close();
         } catch (SQLException ex) {
+            Log.e("EXCEPTION: ",""+ex.getMessage());
         }
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,7 +15,7 @@ import java.io.OutputStream;
 public class DataBaseHelper extends SQLiteOpenHelper {
     private static String DB_PATH = "/data/data/com.example.dmitro.database/databases/";
     private static String DB_NAME = "data20.db";
-    private static final int VERSION = 1; // версия базы данных
+    private static final int VERSION = 1; // version DB
 
     public static final String TABLE = "preps";
     public static final String COLUMN_ID = "id";
@@ -46,18 +47,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     public void create_db(){
-        InputStream myInput = null;
-        OutputStream myOutput = null;
+        InputStream myInput;
+        OutputStream myOutput;
         try {
             File file = new File(DB_PATH + DB_NAME);
             if (!file.exists()) {
                 this.getReadableDatabase();
                 //получаем локальную бд как поток
                 myInput = myContext.getAssets().open(DB_NAME);
-                // Путь к новой бд
+                // path for new DB
                 String outFileName = DB_PATH + DB_NAME;
 
-                // Открываем пустую бд
+                // open empty DB
                 myOutput = new FileOutputStream(outFileName);
 
                 // побайтово копируем данные
@@ -73,7 +74,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             }
         }
         catch(IOException ex){
-
+            Log.e("EXCEPTION: ",""+ex.getMessage());
         }
     }
     public void open() throws SQLException {
