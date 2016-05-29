@@ -22,6 +22,8 @@ public class DetailsBase extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManagerDetails;
     private RecyclerView mRecyclerViewDetails;
     private MyAdapterDetails mAdapterDetails;
+    //Intent
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +32,9 @@ public class DetailsBase extends AppCompatActivity {
 
         mDataBaseHelper = new DataBaseHelper(getApplicationContext());
 
-        Intent intent = getIntent();
+        intent = getIntent();
         //Title ActionBar
-        String name = intent.getStringExtra("name");
-        setTitle(name);
+        setTitle(intent.getStringExtra("name"));
 
         getData();
 
@@ -50,22 +51,17 @@ public class DetailsBase extends AppCompatActivity {
 
     public void getData() {
         dataDetails = new ArrayList<>();
-
-        Intent intent = getIntent();
         //get img path and add to Array
         String img = intent.getStringExtra("img");
         InfoDetails info0 = new InfoDetails();
         info0.setImg(img);
         dataDetails.add(info0);
-        //get id for filter
-        int id = intent.getIntExtra("id", 0);
-
         try {
             mDataBaseHelper.open();
             String quary = "SELECT " + DataBaseHelper.COLUMN_PROPERTIES + ", "
                     + DataBaseHelper.COLUMN_DESCRIBE
                     + " FROM " + DataBaseHelper.TABLE_DETAILS
-                    + " WHERE " + DataBaseHelper.COLUMN_PREPID + "=" + id;
+                    + " WHERE " + DataBaseHelper.COLUMN_PREPID + "=" + intent.getIntExtra("id", 0);
             Cursor cursor = mDataBaseHelper.database.rawQuery(quary, null);
             while (cursor.moveToNext()) {
                 String properties = cursor.getString(cursor.getColumnIndex(DataBaseHelper.COLUMN_PROPERTIES));
@@ -81,6 +77,7 @@ public class DetailsBase extends AppCompatActivity {
             cursor.close();
             mDataBaseHelper.database.close();
         } catch (SQLException ex) {
+            Log.e("EXCEPTION: ",""+ex.getMessage());
         }
     }
 }
