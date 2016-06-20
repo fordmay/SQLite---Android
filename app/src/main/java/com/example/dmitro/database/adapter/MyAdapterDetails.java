@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dmitro.database.R;
+import com.example.dmitro.database.item.DetailItem;
 import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
@@ -18,35 +19,36 @@ import java.util.List;
 
 public class MyAdapterDetails extends RecyclerView.Adapter<MyAdapterDetails.ViewHolder> {
 
-    private Context mContext;
-    private List<InfoDetails> mDataDetail = Collections.emptyList();
+    private Context context;
+    private List<DetailItem> mDataDetail = Collections.emptyList();
 
-    public MyAdapterDetails(Context context, List<InfoDetails> dataDetail) {
-        mContext = context;
+    public MyAdapterDetails(Context context, List<DetailItem> dataDetail) {
+        this.context = context;
         mDataDetail = dataDetail;
     }
 
     @Override
     public int getItemViewType(int position) {
         if (position == 0) {
-            return 1;
+            return 1; /*picture*/
         } else {
-            return 2;
+            return 2; /*text*/
         }
     }
 
     @Override
     public MyAdapterDetails.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         switch (viewType) {
-            case 1: {
+            case 1: { /*picture*/
                 View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_of_items_details_1, parent, false);
+                        .inflate(R.layout.list_items_details_1, parent, false);
                 ViewHolder vh = new ViewHolder(view);
                 return vh;
             }
-            case 2: {
+            case 2: { /*text*/
                 View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_of_items_details_2, parent, false);
+                        .inflate(R.layout.list_items_details_2, parent, false);
                 ViewHolder vh = new ViewHolder(view);
                 return vh;
             }
@@ -56,17 +58,18 @@ public class MyAdapterDetails extends RecyclerView.Adapter<MyAdapterDetails.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        InfoDetails infoDetails = mDataDetail.get(position);
-        if (position == 0) {
-            Uri uri = Uri.parse(infoDetails.getImg());
-            Context context = holder.image_details.getContext();
+        DetailItem detailItem = mDataDetail.get(position);
+        if (position == 0)  { /*picture*/
+            Uri uri = Uri.parse(detailItem.getImg());
             Picasso.with(context).load(uri)
                     .resizeDimen(R.dimen.image_details_size_width, R.dimen.image_details_size_height)
                     .centerInside()
                     .into(holder.image_details);
-        } else {
-            holder.properties.setText(infoDetails.getProperties());
-            holder.describe.setText(Html.fromHtml(infoDetails.getDescribe()));
+        } else { /*text*/
+            holder.properties.setText(detailItem.getProperties());
+
+            // Text with html format
+            holder.describe.setText(Html.fromHtml(detailItem.getDescribe()));
         }
     }
 
@@ -76,6 +79,7 @@ public class MyAdapterDetails extends RecyclerView.Adapter<MyAdapterDetails.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
         ImageView image_details;
         TextView properties;
         TextView describe;

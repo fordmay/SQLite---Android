@@ -11,45 +11,47 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.dmitro.database.Base;
-import com.example.dmitro.database.DetailsBase;
+import com.example.dmitro.database.DetailActivity;
 import com.example.dmitro.database.R;
+import com.example.dmitro.database.item.MainItem;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-    private Context mContext;
-    private List<Information> mData = Collections.emptyList();
-    private List<Information> copyData = Collections.emptyList();
-    public MyAdapter(Context context, List<Information> data) {
-        mContext = context;
+
+    private Context context;
+    private List<MainItem> mData = Collections.emptyList();
+    private List<MainItem> copyData = Collections.emptyList();
+
+    public MyAdapter(Context context, List<MainItem> data) {
+        this.context = context;
         mData = data;
         copyData = mData;
     }
 
     @Override
     public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // create a new view
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_of_items, parent, false);
+                .inflate(R.layout.list_items, parent, false);
         ViewHolder vh = new ViewHolder(view);
         return vh;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Information info = mData.get(position);
-        holder.name_for_list.setText(info.getName());
-        //text with html format
-        holder.about_for_list.setText(Html.fromHtml(info.getAbout()));
-        //take img from internet
-        Uri uri = Uri.parse(info.getImage());
-        Context context = holder.image_for_list.getContext();
+
+        MainItem item = mData.get(position);
+        holder.name_for_list.setText(item.getName());
+
+        // Text with html format
+        holder.about_for_list.setText(Html.fromHtml(item.getAbout()));
+
+        // Take img from internet
+        Uri uri = Uri.parse(item.getImage());
         Picasso.with(context).load(uri)
                 .resizeDimen(R.dimen.image_size_width, R.dimen.image_size_height)
                 .centerInside()
@@ -62,13 +64,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
         private TextView name_for_list;
         private TextView about_for_list;
         private ImageView image_for_list;
 
         public ViewHolder(View itemView) {
             super(itemView);
+
             itemView.setOnClickListener(this);
+
             name_for_list = (TextView) itemView.findViewById(R.id.name_for_list);
             about_for_list = (TextView) itemView.findViewById(R.id.about_for_list);
             image_for_list = (ImageView) itemView.findViewById(R.id.image_for_list);
@@ -76,17 +81,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            Information infoId = mData.get(getAdapterPosition());
-            int id = infoId.getId();
-            String name = infoId.getName();
-            String img = infoId.getImage();
-            Intent intent = new Intent(mContext, DetailsBase.class);
+
+            // Get selected information
+            MainItem item = mData.get(getAdapterPosition());
+            int id = item.getId();
+            String name = item.getName();
+            String img = item.getImage();
+
+            // Send selected information to DetailActivity
+            Intent intent = new Intent(context, DetailActivity.class);
             intent.putExtra("id", id);
             intent.putExtra("name", name);
             intent.putExtra("img", img);
-            mContext.startActivity(intent);
+            context.startActivity(intent);
         }
     }
+
     public void filter(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
         mData = new ArrayList<>();
@@ -95,7 +105,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             mData.addAll(copyData);
         } else {
             for (int i = 0; i < copyData.size(); i++) {
-                final Information copyCurrent = copyData.get(i);
+                final MainItem copyCurrent = copyData.get(i);
 
                 if (copyCurrent.getAbout().toLowerCase(Locale.getDefault()).contains(charText)) {
                     mData.add(copyData.get(i));
